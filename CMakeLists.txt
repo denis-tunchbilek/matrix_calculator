@@ -18,8 +18,6 @@ target_include_directories(matrix_core
 add_library(matrix_io
         src/io/matrix_input.cpp
         src/io/matrix_printer.cpp
-        src/io/matrix_printer.h
-        src/io/matrix_printer.cpp
 )
 
 target_include_directories(matrix_io
@@ -32,8 +30,24 @@ target_link_libraries(matrix_io
         matrix_core
 )
 
+add_library(matrix_util
+        src/util/value_printer.cpp
+)
+
+target_include_directories(matrix_util
+        PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}/src
+)
+
+target_link_libraries(matrix_util
+        PUBLIC
+        matrix_core
+        matrix_io
+)
+
 add_executable(matrix_app
         src/app/main.cpp
+        src/util/value_printer.cpp
 )
 
 target_include_directories(matrix_app
@@ -43,8 +57,9 @@ target_include_directories(matrix_app
 
 target_link_libraries(matrix_app
         PRIVATE
-        matrix_io
         matrix_core
+        matrix_io
+        matrix_util
 )
 
 enable_testing()
