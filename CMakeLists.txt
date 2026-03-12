@@ -10,6 +10,8 @@ add_library(matrix_io
         src/io/matrix_input.cpp
         src/io/matrix_input.h
         src/io/matrix_input.cpp
+        src/util/value.h
+        src/util/value_printer.h
 )
 
 target_include_directories(matrix_io
