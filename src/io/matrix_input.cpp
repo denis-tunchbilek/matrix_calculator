@@ -36,78 +36,22 @@ namespace {
     values.reserve(rows.size() * columnCount);
 
     for (std::size_t rowIndex = 0; rowIndex < rows.size(); ++rowIndex) {
+        if (rows[rowIndex].empty()) {
+            throw core::ParseError("Matrix row " + std::to_string(rowIndex + 1) + " is empty");
+        }
+
         if (rows[rowIndex].size() != columnCount) {
-            throw core::ParseError("Matrix rows must have the same number of elements");
+            throw core::ParseError(
+                "Matrix row " + std::to_string(rowIndex + 1) +
+                " has size " + std::to_string(rows[rowIndex].size()) +
+                ", expected " + std::to_string(columnCount)
+            );
         }
 
         values.insert(values.end(), rows[rowIndex].begin(), rows[rowIndex].end());
     }
 
     return core::Matrix(rows.size(), columnCount, std::move(values));
-}
-
-[[nodiscard]] core::Matrix parseMultiline(std::istream& input) {
-    std::vector<std::vector<double>> rows;
-
-    std::string line;
-    bool opened = false;
-    bool closed = false;
-
-    while (std::getline(input, line)) {
-        const std::string cleaned = trim(line);
-
-        if (cleaned.empty()) {
-            continue;
-        }
-
-        if (!opened) {
-            if (cleaned != "[") {
-                throw core::ParseError("Multiline matrix must start with '[' on a separate line");
-            }
-
-            opened = true;
-            continue;
-        }
-
-        if (cleaned == "]") {
-            closed = true;
-            break;
-        }
-
-        std::istringstream rowStream(cleaned);
-        std::vector<double> row;
-        double value = 0.0;
-
-        while (rowStream >> value) {
-            row.push_back(value);
-        }
-
-        if (row.empty()) {
-            throw core::ParseError("Matrix row does not contain valid numeric values");
-        }
-
-        if (!rowStream.eof()) {
-            throw core::ParseError("Failed to parse a number in matrix row");
-        }
-
-        rows.push_back(std::move(row));
-    }
-
-    if (!opened) {
-        throw core::ParseError("Matrix input is empty or missing opening '['");
-    }
-
-    if (!closed) {
-        throw core::ParseError("Matrix input is missing closing ']'");
-    }
-
-    while (std::getline(input, line)) {
-        if (!trim(line).empty()) {
-            throw core::ParseError("Unexpected data after closing ']'");
-        }
-    }
-
-    return buildMatrix(rows);
 }
 
 void skipSpaces(const std::string& text, std::size_t& pos) {
@@ -119,8 +63,16 @@ void skipSpaces(const std::string& text, std::size_t& pos) {
 void expect(const std::string& text, std::size_t& pos, const char expected) {
     skipSpaces(text, pos);
 
-    if (pos >= text.size() || text[pos] != expected) {
-        throw core::ParseError(std::string("Expected '") + expected + "'");
+    if (pos >= text.size()) {
+        throw core::ParseError(
+            std::string("Expected '") + expected + "', but reached end of input"
+        );
+    }
+
+    if (text[pos] != expected) {
+        throw core::ParseError(
+            std::string("Expected '") + expected + "', found '" + text[pos] + "'"
+        );
     }
 
     ++pos;
@@ -129,15 +81,19 @@ void expect(const std::string& text, std::size_t& pos, const char expected) {
 [[nodiscard]] double parseNumber(const std::string& text, std::size_t& pos) {
     skipSpaces(text, pos);
 
+    if (pos >= text.size()) {
+        throw core::ParseError("Expected numeric value, but reached end of input");
+    }
+
     std::size_t parsed = 0;
     try {
         const double value = std::stod(text.substr(pos), &parsed);
         pos += parsed;
         return value;
     } catch (const std::invalid_argument&) {
-        throw core::ParseError("Expected numeric value");
+        throw core::ParseError("Expected numeric value near position " + std::to_string(pos));
     } catch (const std::out_of_range&) {
-        throw core::ParseError("Numeric value is out of range");
+        throw core::ParseError("Numeric value is out of range near position " + std::to_string(pos));
     }
 }
 
@@ -154,10 +110,12 @@ void expect(const std::string& text, std::size_t& pos, const char expected) {
 
         skipSpaces(text, pos);
         while (pos < text.size() && text[pos] == ',') {
+            const std::size_t commaPos = pos;
             ++pos;
             skipSpaces(text, pos);
 
             if (pos < text.size() && text[pos] == '[') {
+                pos = commaPos;
                 break;
             }
 
@@ -183,7 +141,85 @@ void expect(const std::string& text, std::size_t& pos, const char expected) {
     skipSpaces(text, pos);
 
     if (pos != text.size()) {
-        throw core::ParseError("Unexpected trailing characters after matrix");
+        throw core::ParseError(
+            "Unexpected trailing characters after matrix near position " + std::to_string(pos)
+        );
+    }
+
+    return buildMatrix(rows);
+}
+
+[[nodiscard]] core::Matrix parseMultiline(const std::string& content) {
+    std::vector<std::vector<double>> rows;
+    std::istringstream input(content);
+
+    std::string line;
+    std::size_t lineNumber = 0;
+    bool opened = false;
+    bool closed = false;
+
+    while (std::getline(input, line)) {
+        ++lineNumber;
+        const std::string cleaned = trim(line);
+
+        if (cleaned.empty()) {
+            continue;
+        }
+
+        if (!opened) {
+            if (cleaned != "[") {
+                throw core::ParseError(
+                    "Multiline matrix must start with '[' on a separate line"
+                );
+            }
+
+            opened = true;
+            continue;
+        }
+
+        if (cleaned == "]") {
+            closed = true;
+            break;
+        }
+
+        std::istringstream rowStream(cleaned);
+        std::vector<double> row;
+        double value = 0.0;
+
+        while (rowStream >> value) {
+            row.push_back(value);
+        }
+
+        if (row.empty()) {
+            throw core::ParseError(
+                "Line " + std::to_string(lineNumber) + " does not contain valid numeric values"
+            );
+        }
+
+        if (!rowStream.eof()) {
+            throw core::ParseError(
+                "Failed to parse matrix row on line " + std::to_string(lineNumber)
+            );
+        }
+
+        rows.push_back(std::move(row));
+    }
+
+    if (!opened) {
+        throw core::ParseError("Matrix input is empty or missing opening '['");
+    }
+
+    if (!closed) {
+        throw core::ParseError("Matrix input is missing closing ']'");
+    }
+
+    while (std::getline(input, line)) {
+        ++lineNumber;
+        if (!trim(line).empty()) {
+            throw core::ParseError(
+                "Unexpected non-empty line after closing ']' at line " + std::to_string(lineNumber)
+            );
+        }
     }
 
     return buildMatrix(rows);
@@ -204,8 +240,7 @@ core::Matrix MatrixInput::read(std::istream& input) const {
         return parseSingleLine(content);
     }
 
-    std::istringstream multilineStream(content);
-    return parseMultiline(multilineStream);
+    return parseMultiline(content);
 }
 
 } // namespace io
