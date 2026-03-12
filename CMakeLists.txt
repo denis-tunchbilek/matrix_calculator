@@ -17,6 +17,9 @@ target_include_directories(matrix_core
 
 add_library(matrix_io
         src/io/matrix_input.cpp
+        src/io/matrix_printer.cpp
+        src/io/matrix_printer.h
+        src/io/matrix_printer.cpp
 )
 
 target_include_directories(matrix_io
