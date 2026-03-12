@@ -49,6 +49,8 @@ target_link_libraries(matrix_util
 add_library(matrix_report
         src/report/info_step.cpp
         src/report/transform_step.cpp
+        src/report/property_step.cpp
+        src/report/runner.cpp
 )
 
 target_include_directories(matrix_report
@@ -59,6 +61,7 @@ target_include_directories(matrix_report
 target_link_libraries(matrix_report
         PUBLIC
         matrix_core
+        matrix_io
         matrix_util
 )
 
