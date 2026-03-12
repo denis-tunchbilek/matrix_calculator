@@ -3,6 +3,8 @@
 #include <stdexcept>
 #include <string>
 
+#include "core/linalg.h"
+
 namespace report {
 
     TransformStep::TransformStep(const Mode mode)
@@ -12,6 +14,8 @@ namespace report {
         switch (mode_) {
             case Mode::Transpose:
                 return "Transpose";
+            case Mode::Rref:
+                return "RREF";
         }
 
         return "Transform";
@@ -21,6 +25,8 @@ namespace report {
         switch (mode_) {
             case Mode::Transpose:
                 return matrix.transpose();
+            case Mode::Rref:
+                return core::LinAlgService{}.rref(matrix);
         }
 
         throw std::runtime_error("Unsupported TransformStep mode");

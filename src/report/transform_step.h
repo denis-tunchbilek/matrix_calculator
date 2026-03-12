@@ -7,7 +7,8 @@ namespace report {
     class TransformStep final : public Step {
     public:
         enum class Mode {
-            Transpose
+            Transpose,
+            Rref
         };
 
         explicit TransformStep(Mode mode);

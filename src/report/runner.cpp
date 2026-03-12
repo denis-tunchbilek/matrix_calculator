@@ -41,10 +41,15 @@ namespace report {
     }
 
     void StepRunner::run(const core::Matrix& matrix, std::ostream& output) const {
+        output << "=== Input matrix ===\n";
+        printer_->print(output, matrix);
+        output << "\n\n";
+
+        output << "=== Report ===\n";
         for (const auto& step : steps_) {
             ScopedStepTimer timer(step->name());
 
-            output << "== " << step->name() << " ==\n";
+            output << "-- " << step->name() << " --\n";
             const auto value = step->run(matrix);
             util::printValue(output, value, printer_);
             output << "\n\n";

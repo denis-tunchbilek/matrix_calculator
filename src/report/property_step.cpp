@@ -2,6 +2,9 @@
 
 #include <string>
 
+#include "core/errors.h"
+#include "core/linalg.h"
+
 namespace report {
 
     PropertyStep::PropertyStep(const Mode mode)
@@ -21,15 +24,29 @@ namespace report {
     }
 
     util::Value PropertyStep::run(const core::Matrix& matrix) {
-        (void)matrix;
+        core::LinAlgService service;
 
         switch (mode_) {
             case Mode::Rank:
-                return std::string("rank calculation is not implemented yet");
+                return service.rank(matrix);
+
             case Mode::Determinant:
-                return std::string("determinant calculation is not implemented yet");
+                try {
+                    return service.det(matrix);
+                } catch (const core::DimensionError&) {
+                    return std::string("determinant is defined only for square matrices");
+                }
+
             case Mode::Inverse:
-                return std::string("inverse calculation is not implemented yet");
+                try {
+                    const auto inverse = service.inverse(matrix);
+                    if (inverse.has_value()) {
+                        return *inverse;
+                    }
+                    return std::string("inverse does not exist for a singular matrix");
+                } catch (const core::DimensionError&) {
+                    return std::string("inverse is defined only for square matrices");
+                }
         }
 
         return std::string("unknown property step");
