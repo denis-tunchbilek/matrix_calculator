@@ -8,15 +8,25 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 add_library(matrix_io
         src/io/matrix_input.cpp
-        src/io/matrix_input.h
-        src/io/matrix_input.cpp
-        src/util/value.h
-        src/util/value_printer.h
 )
 
 target_include_directories(matrix_io
         PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/src
+)
+
+add_executable(matrix_app
+        src/app/main.cpp
+)
+
+target_include_directories(matrix_app
+        PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/src
+)
+
+target_link_libraries(matrix_app
+        PRIVATE
+        matrix_io
 )
 
 enable_testing()
