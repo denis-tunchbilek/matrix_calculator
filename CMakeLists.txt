@@ -45,9 +45,23 @@ target_link_libraries(matrix_util
         matrix_io
 )
 
+add_library(matrix_report
+        src/report/info_step.cpp
+)
+
+target_include_directories(matrix_report
+        PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}/src
+)
+
+target_link_libraries(matrix_report
+        PUBLIC
+        matrix_core
+        matrix_util
+)
+
 add_executable(matrix_app
         src/app/main.cpp
-        src/util/value_printer.cpp
 )
 
 target_include_directories(matrix_app
@@ -60,6 +74,7 @@ target_link_libraries(matrix_app
         matrix_core
         matrix_io
         matrix_util
+        matrix_report
 )
 
 enable_testing()
