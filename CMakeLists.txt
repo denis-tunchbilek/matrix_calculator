@@ -47,6 +47,7 @@ target_link_libraries(matrix_util
 
 add_library(matrix_report
         src/report/info_step.cpp
+        src/report/transform_step.cpp
 )
 
 target_include_directories(matrix_report
