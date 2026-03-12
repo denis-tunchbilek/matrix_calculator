@@ -19,4 +19,4 @@ namespace report {
         std::vector<std::unique_ptr<Step>> steps_;
     };
 
-} // namespace report
+}

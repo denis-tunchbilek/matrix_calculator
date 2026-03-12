@@ -15,4 +15,4 @@ namespace report {
         [[nodiscard]] virtual util::Value run(const core::Matrix& matrix) = 0;
     };
 
-} // namespace report
+}
