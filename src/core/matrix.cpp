@@ -64,6 +64,28 @@ namespace core {
         return result;
     }
 
+    Matrix Matrix::operator*(const Matrix& other) const {
+        if (cols_ != other.rows_) {
+            throw DimensionError(
+                "Cannot multiply matrices of sizes " + std::to_string(rows_) + "x" +
+                std::to_string(cols_) + " and " + std::to_string(other.rows_) +
+                "x" + std::to_string(other.cols_)
+            );
+        }
+
+        Matrix result(rows_, other.cols_);
+        for (std::size_t row = 0; row < rows_; ++row) {
+            for (std::size_t col = 0; col < other.cols_; ++col) {
+                double sum = 0.0;
+                for (std::size_t k = 0; k < cols_; ++k) {
+                    sum += at(row, k) * other.at(k, col);
+                }
+                result.at(row, col) = sum;
+            }
+        }
+        return result;
+    }
+
     Matrix Matrix::operator*(double scalar) const {
         Matrix result(rows_, cols_);
         for (std::size_t i = 0; i < data_.size(); ++i) {
@@ -71,6 +93,39 @@ namespace core {
         }
         return result;
     }
+
+    Matrix Matrix::operator+(const Matrix& other) const {
+        if (rows_ != other.rows_ || cols_ != other.cols_) {
+            throw DimensionError(
+                "Cannot add matrices of sizes " + std::to_string(rows_) + "x" +
+                std::to_string(cols_) + " and " + std::to_string(other.rows_) +
+                "x" + std::to_string(other.cols_)
+            );
+        }
+
+        Matrix result(rows_, cols_);
+        for (std::size_t i = 0; i < data_.size(); ++i) {
+            result.raw()[i] = data_[i] + other.raw()[i];
+        }
+        return result;
+    }
+
+    Matrix Matrix::operator-(const Matrix& other) const {
+        if (rows_ != other.rows_ || cols_ != other.cols_) {
+            throw DimensionError(
+                "Cannot subtract matrices of sizes " + std::to_string(rows_) + "x" +
+                std::to_string(cols_) + " and " + std::to_string(other.rows_) +
+                "x" + std::to_string(other.cols_)
+            );
+        }
+
+        Matrix result(rows_, cols_);
+        for (std::size_t i = 0; i < data_.size(); ++i) {
+            result.raw()[i] = data_[i] - other.raw()[i];
+        }
+        return result;
+    }
+
     std::size_t Matrix::index(std::size_t row, std::size_t col) const noexcept {
         return row * cols_ + col;
     }
