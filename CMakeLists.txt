@@ -47,7 +47,6 @@ target_link_libraries(matrix_util
 
 add_executable(matrix_app
         src/app/main.cpp
-        src/util/value_printer.cpp
 )
 
 target_include_directories(matrix_app
