@@ -46,6 +46,31 @@ namespace core {
         return data_;
     }
 
+    Matrix Matrix::identity(std::size_t size) {
+        Matrix result(size, size);
+        for (std::size_t i = 0; i < size; ++i) {
+            result.at(i, i) = 1.0;
+        }
+        return result;
+    }
+
+    Matrix Matrix::transpose() const {
+        Matrix result(cols_, rows_);
+        for (std::size_t row = 0; row < rows_; ++row) {
+            for (std::size_t col = 0; col < cols_; ++col) {
+                result.at(col, row) = at(row, col);
+            }
+        }
+        return result;
+    }
+
+    Matrix Matrix::operator*(double scalar) const {
+        Matrix result(rows_, cols_);
+        for (std::size_t i = 0; i < data_.size(); ++i) {
+            result.raw()[i] = data_[i] * scalar;
+        }
+        return result;
+    }
     std::size_t Matrix::index(std::size_t row, std::size_t col) const noexcept {
         return row * cols_ + col;
     }
