@@ -5,14 +5,14 @@
 #include "core/matrix.h"
 #include "util/value.h"
 
-namespace report {
+namespace matrix::report {
 
     class Step {
     public:
         virtual ~Step() = default;
 
-        [[nodiscard]] virtual std::string name() const = 0;
-        [[nodiscard]] virtual util::Value run(const core::Matrix& matrix) = 0;
+        virtual std::string name() const = 0;
+        virtual matrix::util::Value run(const matrix::core::Matrix& matrix) = 0;
     };
 
 }

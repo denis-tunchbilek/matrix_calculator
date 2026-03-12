@@ -2,12 +2,12 @@
 
 #include "report/step.h"
 
-namespace report {
+namespace matrix::report {
 
-    class InfoStep final : public Step {
+    class InfoStep : public Step {
     public:
-        [[nodiscard]] std::string name() const override;
-        [[nodiscard]] util::Value run(const core::Matrix& matrix) override;
+        std::string name() const override;
+        matrix::util::Value run(const matrix::core::Matrix& matrix) override;
     };
 
-} // namespace report
+}
