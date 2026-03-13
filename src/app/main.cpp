@@ -12,11 +12,19 @@
 #include "report/transform_step.h"
 
 namespace {
-std::string readAllStdin() {
-    std::ostringstream buffer;
-    buffer << std::cin.rdbuf();
-    return buffer.str();
-}
+    std::string readAllStdin() {
+        std::string result;
+        std::string line;
+
+        while (std::getline(std::cin, line)) {
+            if (line.empty()) {
+                break;
+            }
+            result += line + '\n';
+        }
+
+        return result;
+    }
 }
 
 int main() {
