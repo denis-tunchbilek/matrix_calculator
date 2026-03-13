@@ -1,21 +1,15 @@
-#ifndef MATRIXCALCULATOR_VALUE_PRINTER_H
-#define MATRIXCALCULATOR_VALUE_PRINTER_H
 #pragma once
 
+#include <iosfwd>
 #include <memory>
-#include <ostream>
 
+#include "io/matrix_printer.h"
 #include "util/value.h"
 
-namespace io {
-    class MatrixPrinter;
-}
+namespace matrix::util {
 
-namespace util {
-
-    void printValue(std::ostream& output,
+    void printValue(std::ostream& out,
                     const Value& value,
-                    const std::shared_ptr<const io::MatrixPrinter>& matrixPrinter);
+                    const std::shared_ptr<const matrix::io::MatrixPrinter>& printer);
 
-} // namespace util
-#endif //MATRIXCALCULATOR_VALUE_PRINTER_H
+} // namespace matrix::util

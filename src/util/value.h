@@ -1,9 +1,3 @@
-//
-// Created by Денис on 12.03.2026.
-//
-
-#ifndef MATRIXCALCULATOR_VALUE_H
-#define MATRIXCALCULATOR_VALUE_H
 #pragma once
 
 #include <string>
@@ -11,9 +5,8 @@
 
 #include "core/matrix.h"
 
-namespace util {
+namespace matrix::util {
 
-    using Value = std::variant<core::Matrix, double, int, std::string>;
+    using Value = std::variant<matrix::core::Matrix, double, int, std::string>;
 
-} // namespace util
-#endif //MATRIXCALCULATOR_VALUE_H
+} // namespace matrix::util

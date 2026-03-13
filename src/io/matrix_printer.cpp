@@ -1,6 +1,5 @@
 #include "io/matrix_printer.h"
 
-#include <algorithm>
 #include <cmath>
 #include <iomanip>
 #include <ostream>
@@ -10,50 +9,40 @@
 
 #include "core/constants.h"
 
-namespace io {
-    namespace {
+namespace matrix::io {
 
-        [[nodiscard]] std::string formatCell(const double value) {
-            const double normalized = core::isNearlyZero(value) ? 0.0 : value;
+    void MatrixPrinter::print(std::ostream& out, const matrix::core::Matrix& matrix) const {
+        std::vector<std::vector<std::string>> cells(static_cast<std::size_t>(matrix.rows()),
+                                                    std::vector<std::string>(static_cast<std::size_t>(matrix.cols())));
+        std::vector<std::size_t> widths(static_cast<std::size_t>(matrix.cols()), 0);
 
-            std::ostringstream stream;
-            stream << std::fixed << std::setprecision(core::PRINT_PRECISION) << normalized;
-            return stream.str();
-        }
-
-    } // namespace
-
-    void MatrixPrinter::print(std::ostream& output, const core::Matrix& matrix) const {
-        if (matrix.rows() == 0 || matrix.cols() == 0) {
-            output << "[]";
-            return;
-        }
-
-        std::vector<std::vector<std::string>> formatted(
-            matrix.rows(),
-            std::vector<std::string>(matrix.cols())
-        );
-
-        std::size_t cellWidth = 0;
-        for (std::size_t row = 0; row < matrix.rows(); ++row) {
-            for (std::size_t col = 0; col < matrix.cols(); ++col) {
-                formatted[row][col] = formatCell(matrix.at(row, col));
-                cellWidth = std::max(cellWidth, formatted[row][col].size());
+        for (int r = 0; r < matrix.rows(); ++r) {
+            for (int c = 0; c < matrix.cols(); ++c) {
+                double value = matrix.at(r, c);
+                if (std::abs(value) < matrix::core::EPS) {
+                    value = 0.0;
+                }
+                std::ostringstream formatter;
+                formatter << std::fixed << std::setprecision(matrix::core::PRINT_PRECISION) << value;
+                cells[static_cast<std::size_t>(r)][static_cast<std::size_t>(c)] = formatter.str();
+                widths[static_cast<std::size_t>(c)] =
+                    std::max(widths[static_cast<std::size_t>(c)], formatter.str().size());
             }
         }
 
-        output << "[\n";
-        for (std::size_t row = 0; row < matrix.rows(); ++row) {
-            output << "  ";
-            for (std::size_t col = 0; col < matrix.cols(); ++col) {
-                output << std::setw(static_cast<int>(cellWidth)) << formatted[row][col];
-                if (col + 1 < matrix.cols()) {
-                    output << ' ';
+        out << "[\n";
+        for (int r = 0; r < matrix.rows(); ++r) {
+            out << "  ";
+            for (int c = 0; c < matrix.cols(); ++c) {
+                out << std::setw(static_cast<int>(widths[static_cast<std::size_t>(c)]))
+                    << cells[static_cast<std::size_t>(r)][static_cast<std::size_t>(c)];
+                if (c + 1 != matrix.cols()) {
+                    out << ' ';
                 }
             }
-            output << '\n';
+            out << '\n';
         }
-        output << ']';
+        out << ']';
     }
 
-} // namespace io
+} // namespace matrix::io

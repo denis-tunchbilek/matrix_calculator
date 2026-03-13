@@ -1,43 +1,24 @@
 #include "util/value_printer.h"
 
-#include <iomanip>
 #include <ostream>
-#include <stdexcept>
-#include <string>
 #include <utility>
 #include <variant>
 
-#include "core/constants.h"
-#include "io/matrix_printer.h"
+namespace matrix::util {
 
-namespace util {
-
-    void printValue(std::ostream& output,
+    void printValue(std::ostream& out,
                     const Value& value,
-                    const std::shared_ptr<const io::MatrixPrinter>& matrixPrinter) {
+                    const std::shared_ptr<const matrix::io::MatrixPrinter>& printer) {
         std::visit(
-            [&](const auto& storedValue) {
-                using T = std::decay_t<decltype(storedValue)>;
-
-                if constexpr (std::is_same_v<T, core::Matrix>) {
-                    if (!matrixPrinter) {
-                        throw std::invalid_argument(
-                            "printValue requires a non-null MatrixPrinter for Matrix values"
-                        );
-                    }
-
-                    matrixPrinter->print(output, storedValue);
-                } else if constexpr (std::is_same_v<T, double>) {
-                    const double normalized = core::isNearlyZero(storedValue) ? 0.0 : storedValue;
-                    output << std::fixed << std::setprecision(core::PRINT_PRECISION) << normalized;
-                } else if constexpr (std::is_same_v<T, int>) {
-                    output << storedValue;
-                } else if constexpr (std::is_same_v<T, std::string>) {
-                    output << storedValue;
+            [&](const auto& current) {
+                using T = std::decay_t<decltype(current)>;
+                if constexpr (std::is_same_v<T, matrix::core::Matrix>) {
+                    printer->print(out, current);
+                } else {
+                    out << current;
                 }
             },
-            value
-        );
+            value);
     }
 
-} // namespace util
+} // namespace matrix::util

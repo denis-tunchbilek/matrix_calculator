@@ -1,17 +1,14 @@
-#ifndef MATRIXCALCULATOR_MATRIX_PRINTER_H
-#define MATRIXCALCULATOR_MATRIX_PRINTER_H
 #pragma once
 
 #include <iosfwd>
 
 #include "core/matrix.h"
 
-namespace io {
+namespace matrix::io {
 
     class MatrixPrinter {
     public:
-        void print(std::ostream& output, const core::Matrix& matrix) const;
+        void print(std::ostream& out, const matrix::core::Matrix& matrix) const;
     };
 
-} // namespace io
-#endif //MATRIXCALCULATOR_MATRIX_PRINTER_H
+} // namespace matrix::io
