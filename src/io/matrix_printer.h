@@ -4,11 +4,11 @@
 
 #include "core/matrix.h"
 
-namespace matrix::io {
+namespace io {
 
     class MatrixPrinter {
     public:
-        void print(std::ostream& out, const matrix::core::Matrix& matrix) const;
+        void print(std::ostream& out, const core::Matrix& matrix) const;
     };
 
 } // namespace matrix::io

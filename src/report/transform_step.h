@@ -20,4 +20,4 @@ namespace report {
         Mode mode_;
     };
 
-}
+} // namespace matrix::report

@@ -1,24 +1,25 @@
 #include "util/value_printer.h"
 
-#include <ostream>
-#include <utility>
+#include <type_traits>
 #include <variant>
 
-namespace matrix::util {
+namespace util {
 
     void printValue(std::ostream& out,
                     const Value& value,
-                    const std::shared_ptr<const matrix::io::MatrixPrinter>& printer) {
+                    const std::shared_ptr<const io::MatrixPrinter>& printer) {
         std::visit(
-            [&](const auto& current) {
-                using T = std::decay_t<decltype(current)>;
-                if constexpr (std::is_same_v<T, matrix::core::Matrix>) {
-                    printer->print(out, current);
+            [&](const auto& item) {
+                using T = std::decay_t<decltype(item)>;
+
+                if constexpr (std::is_same_v<T, core::Matrix>) {
+                    printer->print(out, item);
                 } else {
-                    out << current;
+                    out << item;
                 }
             },
-            value);
+            value
+        );
     }
 
-} // namespace matrix::util
+} // namespace util

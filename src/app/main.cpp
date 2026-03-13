@@ -20,13 +20,13 @@ std::string readAllStdin() {
 }
 
 int main() {
-    using matrix::report::InfoStep;
-    using matrix::report::PropertyStep;
-    using matrix::report::StepRunner;
-    using matrix::report::TransformStep;
+    using report::InfoStep;
+    using report::PropertyStep;
+    using report::StepRunner;
+    using report::TransformStep;
 
     try {
-        const matrix::io::MatrixInput input;
+        const io::MatrixInput input;
 
         std::string rawInput = readAllStdin();
         if (rawInput.find_first_not_of(" \t\n\r") == std::string::npos) {
@@ -35,9 +35,9 @@ int main() {
         }
 
         std::istringstream source(rawInput);
-        const matrix::core::Matrix matrix = input.read(source);
+        const core::Matrix matrix = input.read(source);
 
-        auto printer = std::make_shared<const matrix::io::MatrixPrinter>();
+        auto printer = std::make_shared<const io::MatrixPrinter>();
 
         StepRunner runner(printer);
         runner.addStep(std::make_unique<InfoStep>());
@@ -49,7 +49,7 @@ int main() {
         runner.run(std::cout, matrix);
 
         return 0;
-    } catch (const matrix::core::MatrixError& error) {
+    } catch (const core::MatrixError& error) {
         std::cerr << error.what() << '\n';
     } catch (const std::exception& error) {
         std::cerr << "Unexpected error: " << error.what() << '\n';

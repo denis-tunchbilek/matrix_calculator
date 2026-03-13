@@ -1,15 +1,15 @@
 #pragma once
 
-#include <iosfwd>
 #include <memory>
+#include <ostream>
 
 #include "io/matrix_printer.h"
 #include "util/value.h"
 
-namespace matrix::util {
+namespace util {
 
     void printValue(std::ostream& out,
                     const Value& value,
-                    const std::shared_ptr<const matrix::io::MatrixPrinter>& printer);
+                    const std::shared_ptr<const io::MatrixPrinter>& printer);
 
-} // namespace matrix::util
+} // namespace util

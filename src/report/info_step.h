@@ -2,12 +2,12 @@
 
 #include "report/step.h"
 
-namespace matrix::report {
+namespace report {
 
     class InfoStep : public Step {
     public:
         std::string name() const override;
-        matrix::util::Value run(const matrix::core::Matrix& matrix) override;
+        util::Value run(const core::Matrix& matrix) override;
     };
 
 }

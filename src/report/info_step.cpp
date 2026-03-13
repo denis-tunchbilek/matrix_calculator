@@ -2,13 +2,13 @@
 
 #include <string>
 
-namespace matrix::report {
+namespace report {
 
     std::string InfoStep::name() const {
         return "Matrix info";
     }
 
-    matrix::util::Value InfoStep::run(const matrix::core::Matrix& matrix) {
+    util::Value InfoStep::run(const core::Matrix& matrix) {
         const bool isSquare = matrix.rows() == matrix.cols();
         const std::size_t elements = matrix.rows() * matrix.cols();
 

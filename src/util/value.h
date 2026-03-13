@@ -5,8 +5,8 @@
 
 #include "core/matrix.h"
 
-namespace matrix::util {
+namespace util {
 
-    using Value = std::variant<matrix::core::Matrix, double, int, std::string>;
+    using Value = std::variant<core::Matrix, double, int, std::string>;
 
-} // namespace matrix::util
+} // namespace util

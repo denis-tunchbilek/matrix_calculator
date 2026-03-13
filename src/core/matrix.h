@@ -1,9 +1,7 @@
-
 #ifndef MATRIX_CALCULATOR_MATRIX_H
 #define MATRIX_CALCULATOR_MATRIX_H
 
 #pragma once
-
 #include <cstddef>
 #include <vector>
 
@@ -39,5 +37,7 @@ namespace core {
         std::size_t cols_{0};
         std::vector<double> data_{};
     };
-}
-#endif //MATRIX_CALCULATOR_MATRIX_H
+
+} // namespace matrix::core
+
+#endif // MATRIX_CALCULATOR_MATRIX_H
