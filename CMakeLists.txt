@@ -67,6 +67,7 @@ target_link_libraries(matrix_report
 
 add_executable(matrix_app
         src/app/main.cpp
+        tests/test_input.cpp
 )
 
 target_include_directories(matrix_app
