@@ -2,10 +2,8 @@
 #include <memory>
 #include <sstream>
 #include <string>
-#include <utility>
 
 #include "core/errors.h"
-#include "core/matrix.h"
 #include "io/matrix_input.h"
 #include "io/matrix_printer.h"
 #include "report/info_step.h"
@@ -14,61 +12,47 @@
 #include "report/transform_step.h"
 
 namespace {
-
 std::string readAllStdin() {
     std::ostringstream buffer;
     buffer << std::cin.rdbuf();
     return buffer.str();
 }
-
-core::Matrix makeDemoMatrix() {
-    return core::Matrix({
-        {1.0, 2.0, 3.0},
-        {0.0, 1.0, 4.0},
-        {5.0, 6.0, 0.0}
-    });
-}
-
-core::Matrix readInputOrFallback() {
-    const std::string input = readAllStdin();
-    if (input.find_first_not_of(" \t\r\n") == std::string::npos) {
-        return makeDemoMatrix();
-    }
-
-    io::MatrixInput reader;
-    std::istringstream stream(input);
-    return reader.read(stream);
-}
-
 }
 
 int main() {
+    using matrix::report::InfoStep;
+    using matrix::report::PropertyStep;
+    using matrix::report::StepRunner;
+    using matrix::report::TransformStep;
+
     try {
-        const core::Matrix matrix = readInputOrFallback();
+        const matrix::io::MatrixInput input;
 
-        const auto printer = std::make_shared<const io::MatrixPrinter>();
+        std::string rawInput = readAllStdin();
+        if (rawInput.find_first_not_of(" \t\n\r") == std::string::npos) {
+            rawInput = "[[1,2],[3,4]]";
+            std::cout << "No input provided. Using demo matrix: " << rawInput << "\n\n";
+        }
 
-        report::StepRunner runner(printer);
+        std::istringstream source(rawInput);
+        const matrix::core::Matrix matrix = input.read(source);
 
-        runner.addStep(std::make_unique<report::InfoStep>());
-        runner.addStep(std::make_unique<report::TransformStep>(
-            report::TransformStep::Mode::Transpose));
-        runner.addStep(std::make_unique<report::TransformStep>(
-            report::TransformStep::Mode::Rref));
-        runner.addStep(std::make_unique<report::PropertyStep>(
-            report::PropertyStep::Mode::Rank));
-        runner.addStep(std::make_unique<report::PropertyStep>(
-            report::PropertyStep::Mode::Determinant));
-        runner.addStep(std::make_unique<report::PropertyStep>(
-            report::PropertyStep::Mode::Inverse));
+        auto printer = std::make_shared<const matrix::io::MatrixPrinter>();
 
-        runner.run(matrix, std::cout);
+        StepRunner runner(printer);
+        runner.addStep(std::make_unique<InfoStep>());
+        runner.addStep(std::make_unique<TransformStep>(TransformStep::Mode::Transpose));
+        runner.addStep(std::make_unique<TransformStep>(TransformStep::Mode::Rref));
+        runner.addStep(std::make_unique<PropertyStep>(PropertyStep::Mode::Rank));
+        runner.addStep(std::make_unique<PropertyStep>(PropertyStep::Mode::Determinant));
+        runner.addStep(std::make_unique<PropertyStep>(PropertyStep::Mode::Inverse));
+        runner.run(std::cout, matrix);
+
         return 0;
-    } catch (const core::MatrixError& error) {
-        std::cerr << "Matrix error: " << error.what() << '\n';
-        return 1;
+    } catch (const matrix::core::MatrixError& error) {
+        std::cerr << error.what() << '\n';
     } catch (const std::exception& error) {
         std::cerr << "Unexpected error: " << error.what() << '\n';
-        return 1;
     }
+    return 1;
 }
