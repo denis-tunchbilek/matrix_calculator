@@ -3,8 +3,8 @@
 
 namespace {
 
-    matrix::core::Matrix make22() {
-        matrix::core::Matrix matrix(2, 2);
+    core::Matrix make22() {
+        core::Matrix matrix(2, 2);
         matrix.at(0, 0) = 1.0;
         matrix.at(0, 1) = 2.0;
         matrix.at(1, 0) = 3.0;
@@ -15,7 +15,7 @@ namespace {
 }
 
 TEST(LinAlgTest, ComputesRref) {
-    const matrix::core::LinAlgService service;
+    const core::LinAlgService service;
     const auto matrix = make22();
 
     const auto reduced = service.rref(matrix);
@@ -27,7 +27,7 @@ TEST(LinAlgTest, ComputesRref) {
 }
 
 TEST(LinAlgTest, ComputesRankAndDeterminant) {
-    const matrix::core::LinAlgService service;
+    const core::LinAlgService service;
     const auto matrix = make22();
 
     EXPECT_EQ(service.rank(matrix), 2);
@@ -35,7 +35,7 @@ TEST(LinAlgTest, ComputesRankAndDeterminant) {
 }
 
 TEST(LinAlgTest, ComputesInverseAsOptional) {
-    const matrix::core::LinAlgService service;
+    const core::LinAlgService service;
     const auto matrix = make22();
 
     const auto inverse = service.inverse(matrix);
@@ -48,13 +48,13 @@ TEST(LinAlgTest, ComputesInverseAsOptional) {
 }
 
 TEST(LinAlgTest, ReturnsNulloptForSingularMatrix) {
-    matrix::core::Matrix matrix(2, 2);
+    core::Matrix matrix(2, 2);
     matrix.at(0, 0) = 1.0;
     matrix.at(0, 1) = 2.0;
     matrix.at(1, 0) = 2.0;
     matrix.at(1, 1) = 4.0;
 
-    const matrix::core::LinAlgService service;
+    const core::LinAlgService service;
     const auto inverse = service.inverse(matrix);
 
     EXPECT_FALSE(inverse.has_value());

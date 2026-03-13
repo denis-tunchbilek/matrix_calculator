@@ -13,10 +13,10 @@ namespace report {
         const std::size_t elements = matrix.rows() * matrix.cols();
 
         std::string result;
-        result += "rows: " + std::to_string(matrix.rows()) + "\n";
-        result += "cols: " + std::to_string(matrix.cols()) + "\n";
+        result += "rows: " + std::to_string(matrix.rows()) + ", ";
+        result += "cols: " + std::to_string(matrix.cols()) + ", ";
+        result += "elements: " + std::to_string(elements) + ", ";
         result += "square: " + std::string(isSquare ? "yes" : "no") + "\n";
-        result += "elements: " + std::to_string(elements);
 
         return result;
     }

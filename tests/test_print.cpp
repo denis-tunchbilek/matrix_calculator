@@ -7,11 +7,11 @@
 #include "util/value_printer.h"
 
 TEST(MatrixPrinterTest, NormalizesAlmostZeroToZero) {
-    matrix::core::Matrix matrix(1, 2);
+    core::Matrix matrix(1, 2);
     matrix.at(0, 0) = 1e-12;
     matrix.at(0, 1) = 2.5;
 
-    matrix::io::MatrixPrinter printer;
+    io::MatrixPrinter printer;
     std::ostringstream out;
     printer.print(out, matrix);
 
@@ -20,10 +20,10 @@ TEST(MatrixPrinterTest, NormalizesAlmostZeroToZero) {
 }
 
 TEST(ValuePrinterTest, PrintsVariantUsingVisit) {
-    auto printer = std::make_shared<const matrix::io::MatrixPrinter>();
+    auto printer = std::make_shared<const io::MatrixPrinter>();
     std::ostringstream out;
 
-    matrix::util::printValue(out, matrix::util::Value(std::string("hello")), printer);
+    util::printValue(out, util::Value(std::string("hello")), printer);
 
     EXPECT_EQ(out.str(), "hello");
 }

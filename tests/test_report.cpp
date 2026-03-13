@@ -9,19 +9,19 @@
 #include "report/transform_step.h"
 
 TEST(ReportTest, RunsFullReportWithoutCrashing) {
-    matrix::core::Matrix matrix(2, 2);
+    core::Matrix matrix(2, 2);
     matrix.at(0, 0) = 1.0;
     matrix.at(0, 1) = 2.0;
     matrix.at(1, 0) = 3.0;
     matrix.at(1, 1) = 4.0;
 
-    auto printer = std::make_shared<const matrix::io::MatrixPrinter>();
-    matrix::report::StepRunner runner(printer);
-    runner.addStep(std::make_unique<matrix::report::InfoStep>());
-    runner.addStep(std::make_unique<matrix::report::TransformStep>(
-        matrix::report::TransformStep::Mode::Transpose));
-    runner.addStep(std::make_unique<matrix::report::PropertyStep>(
-        matrix::report::PropertyStep::Mode::Rank));
+    auto printer = std::make_shared<const io::MatrixPrinter>();
+    report::StepRunner runner(printer);
+    runner.addStep(std::make_unique<report::InfoStep>());
+    runner.addStep(std::make_unique<report::TransformStep>(
+        report::TransformStep::Mode::Transpose));
+    runner.addStep(std::make_unique<report::PropertyStep>(
+        report::PropertyStep::Mode::Rank));
 
     std::ostringstream out;
     runner.run(out, matrix);
