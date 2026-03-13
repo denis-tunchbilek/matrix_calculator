@@ -7,31 +7,32 @@
 #include <stdexcept>
 #include <string>
 
-namespace core {
+namespace matrix::core {
 
     class MatrixError : public std::runtime_error {
     public:
         explicit MatrixError(const std::string& message) : std::runtime_error(message) {}
+        ~MatrixError() override = default;
     };
 
-    class ParseError : public MatrixError {
+    class ParseError final : public MatrixError {
     public:
-        explicit ParseError(const std::string& message) : MatrixError(message) {}
+        explicit ParseError(const std::string& message) : MatrixError("Parse error: " + message) {}
     };
 
-    class DimensionError : public MatrixError {
+    class DimensionError final : public MatrixError {
     public:
-        explicit DimensionError(const std::string& message) : MatrixError(message) {}
+        explicit DimensionError(const std::string& message) : MatrixError("Dimension error: " + message) {}
     };
 
-    class SingularError : public MatrixError {
+    class SingularError final : public MatrixError {
     public:
-        explicit SingularError(const std::string& message) : MatrixError(message) {}
+        explicit SingularError(const std::string& message) : MatrixError("Singular matrix: " + message) {}
     };
 
-    class EvalError : public MatrixError {
+    class EvalError final : public MatrixError {
     public:
-        explicit EvalError(const std::string& message) : MatrixError(message) {}
+        explicit EvalError(const std::string& message) : MatrixError("Evaluation error: " + message) {}
     };
 
 }

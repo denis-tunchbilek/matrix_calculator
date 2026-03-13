@@ -50,22 +50,15 @@ add_library(matrix_report
 target_include_directories(matrix_report PUBLIC src)
 target_link_libraries(matrix_report PUBLIC matrix_core matrix_io matrix_util)
 
-add_executable(matrix_app
-        src/app/main.cpp
-)
+add_executable(matrix_app src/app/main.cpp)
 target_link_libraries(matrix_app PRIVATE matrix_core matrix_io matrix_util matrix_report)
 
 add_executable(matrix_tests
         tests/test_input.cpp
         tests/test_linalg.cpp
         tests/test_print.cpp
+        tests/test_report.cpp
 )
-target_link_libraries(matrix_tests PRIVATE
-        matrix_core
-        matrix_io
-        matrix_util
-        matrix_report
-        GTest::gtest_main
-)
+target_link_libraries(matrix_tests PRIVATE matrix_core matrix_io matrix_util matrix_report GTest::gtest_main)
 
 add_test(NAME matrix_tests COMMAND matrix_tests)

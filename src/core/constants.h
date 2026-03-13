@@ -4,13 +4,11 @@
 
 #pragma once
 
-#include <cstddef>
-
 namespace core {
-    constexpr double EPS = 1e-9;
-    constexpr int PRINT_PRECISION = 4;
+    inline constexpr double EPS = 1e-9;
+    inline constexpr int PRINT_PRECISION = 4;
 
-    constexpr bool isNearlyZero(const double value) noexcept {
+    constexpr bool isNearlyZero(const double value) {
         return value > -EPS && value < EPS;
     }
 }
